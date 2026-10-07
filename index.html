@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Static Task Manager</title>
-  <!-- Simple, clean styling, all inline -->
+  <title>TaskFlow · Grand Task Manager</title>
+  <!-- Google Fonts & simple icon library (Font Awesome) for extra polish -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
     }
 
     body {
-      background: linear-gradient(145deg, #f0f4fa 0%, #e2e9f2 100%);
+      background: radial-gradient(circle at 10% 20%, #e7eef9, #cfdef5);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -22,122 +23,248 @@
       padding: 1.5rem;
     }
 
+    /* Main dashboard card - grand and full */
     .app-card {
-      max-width: 680px;
+      max-width: 1100px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 2.5rem;
-      box-shadow: 0 30px 50px rgba(0, 20, 40, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
-      padding: 2rem 1.8rem;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 3rem;
+      box-shadow: 0 30px 60px -15px rgba(12, 30, 60, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+      padding: 2.5rem;
       transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
-    h1 {
+    /* Header area with icon, title, tagline */
+    .header-section {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-weight: 600;
-      font-size: 1.9rem;
-      letter-spacing: -0.02em;
-      color: #1a2b4c;
-      padding-bottom: 0.4rem;
-      border-bottom: 2px solid rgba(74, 110, 170, 0.2);
-      margin-bottom: 1.5rem;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      border-bottom: 2px solid rgba(74, 110, 170, 0.15);
+      padding-bottom: 1.5rem;
     }
 
-    h1 span {
-      background: #2e5a9c;
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .title-icon {
+      background: #1e3a5f;
       color: white;
-      font-size: 1.4rem;
-      width: 2.5rem;
-      height: 2.5rem;
-      display: inline-flex;
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 1.4rem;
+      display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 1rem;
-      box-shadow: 0 8px 16px -4px rgba(30, 70, 150, 0.3);
+      font-size: 1.8rem;
+      box-shadow: 0 12px 20px -8px rgba(20, 50, 100, 0.5);
     }
 
-    .task-input-area {
+    .title-group h1 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      letter-spacing: -0.03em;
+      color: #0d2137;
+      line-height: 1.2;
+    }
+
+    .title-group .subhead {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #3f5b7a;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.2rem;
+    }
+
+    .subhead i {
+      font-size: 0.7rem;
+      color: #2e5a9c;
+    }
+
+    /* Stats row with cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 0.5rem 0 0.2rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      padding: 0.9rem 1.3rem;
+      border-radius: 1.8rem;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border: 1px solid rgba(150, 180, 220, 0.3);
+    }
+
+    .stat-icon {
+      background: #e3edfc;
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e3a5f;
+      font-size: 1.2rem;
+    }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #4a6580;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0d2137;
+      line-height: 1.2;
+    }
+
+    /* Main two-column layout for tasks and extra features */
+    .dashboard-panels {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 1.8rem;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 750px) {
+      .dashboard-panels {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left column: task manager core */
+    .task-manager-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .input-group {
       display: flex;
       gap: 0.8rem;
-      margin-bottom: 2rem;
       flex-wrap: wrap;
+      align-items: center;
+      background: white;
+      padding: 0.4rem 0.4rem 0.4rem 1.5rem;
+      border-radius: 3rem;
+      box-shadow: 0 8px 20px -8px rgba(30, 60, 110, 0.2), 0 0 0 1px rgba(180, 205, 235, 0.6);
     }
 
     #taskInput {
       flex: 1;
       min-width: 180px;
-      padding: 0.9rem 1.2rem;
-      border: 1.5px solid #cddaea;
-      background: white;
-      border-radius: 2rem;
+      padding: 0.9rem 0;
+      border: none;
+      background: transparent;
       font-size: 1rem;
       outline: none;
-      transition: all 0.2s;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      color: #0d2137;
+      font-weight: 500;
     }
 
-    #taskInput:focus {
-      border-color: #3a6fb0;
-      box-shadow: 0 0 0 4px rgba(58, 111, 176, 0.15);
+    #taskInput::placeholder {
+      color: #8ba1bc;
+      font-weight: 400;
     }
 
     #addBtn {
       background: #1d3b66;
       color: white;
       border: none;
-      padding: 0.9rem 2rem;
-      border-radius: 2rem;
-      font-weight: 500;
-      font-size: 1rem;
+      padding: 0.9rem 2.2rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 10px 18px -8px rgba(25, 55, 100, 0.4);
+      gap: 0.6rem;
+      transition: all 0.15s;
+      box-shadow: 0 10px 18px -8px rgba(25, 55, 100, 0.5);
       white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+
+    #addBtn i {
+      font-size: 0.9rem;
     }
 
     #addBtn:hover {
-      background: #112b4a;
+      background: #0d2844;
+      transform: translateY(-1px);
     }
 
     #addBtn:active {
       transform: scale(0.97);
     }
 
-    .stats {
+    /* Task list container — cleaner, more spacious */
+    .task-list-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.2rem;
-      padding: 0 0.2rem;
-      color: #2b3f5e;
-      font-weight: 500;
-      font-size: 0.95rem;
+      padding: 0 0.3rem;
     }
 
-    #taskCount {
-      background: #dee7f2;
-      padding: 0.35rem 1rem;
-      border-radius: 3rem;
+    .task-list-header h2 {
+      font-size: 1.2rem;
       font-weight: 600;
+      color: #1a2f4a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .task-list-header h2 i {
+      color: #2e5a9c;
+      font-size: 1rem;
     }
 
     #clearAllBtn {
       background: transparent;
-      border: 1.5px solid #b7c6db;
+      border: 1.5px solid #cbd9eb;
       color: #2b3f5e;
-      padding: 0.4rem 1.2rem;
+      padding: 0.45rem 1.4rem;
       border-radius: 3rem;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 0.75rem;
       cursor: pointer;
-      font-size: 0.85rem;
       transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      letter-spacing: 0.01em;
+    }
+
+    #clearAllBtn i {
+      font-size: 0.7rem;
     }
 
     #clearAllBtn:hover {
@@ -151,10 +278,10 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      max-height: 380px;
+      max-height: 400px;
       overflow-y: auto;
-      padding-right: 0.3rem;
-      margin-top: 0.5rem;
+      padding-right: 0.4rem;
+      margin-top: 0.2rem;
     }
 
     .task-list::-webkit-scrollbar {
@@ -174,33 +301,27 @@
     .task-item {
       display: flex;
       align-items: center;
-      gap: 0.9rem;
+      gap: 1rem;
       background: white;
-      padding: 0.9rem 1.2rem;
-      border-radius: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(187, 205, 226, 0.4);
+      padding: 1rem 1.4rem;
+      border-radius: 2rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(187, 205, 226, 0.5);
       transition: all 0.15s;
       animation: fadeSlide 0.2s ease;
     }
 
     @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .task-item:hover {
-      box-shadow: 0 8px 18px rgba(30, 60, 110, 0.08), 0 0 0 1px rgba(120, 160, 210, 0.5);
+      box-shadow: 0 10px 22px rgba(30, 60, 110, 0.1), 0 0 0 1px rgba(120, 160, 210, 0.6);
     }
 
     .task-checkbox {
-      width: 1.4rem;
-      height: 1.4rem;
+      width: 1.6rem;
+      height: 1.6rem;
       border-radius: 50%;
       border: 2px solid #b0c8e0;
       background: white;
@@ -213,8 +334,8 @@
     }
 
     .task-checkbox.completed {
-      background: #2e5a9c;
-      border-color: #2e5a9c;
+      background: #1d3b66;
+      border-color: #1d3b66;
     }
 
     .task-checkbox.completed::after {
@@ -227,7 +348,7 @@
 
     .task-text {
       flex: 1;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 500;
       color: #1d2f48;
       word-break: break-word;
@@ -249,7 +370,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       color: #9cabbd;
       cursor: pointer;
       transition: all 0.15s;
@@ -263,76 +384,259 @@
 
     .empty-message {
       text-align: center;
-      padding: 2.2rem 1rem;
+      padding: 2.5rem 1rem;
       background: rgba(235, 243, 252, 0.6);
       border-radius: 2rem;
       color: #4a6280;
       font-weight: 500;
       border: 1px dashed #b8cee8;
+      font-size: 0.95rem;
+    }
+
+    /* Right column: extra features to make it grand */
+    .insights-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 1.5rem 1.5rem;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      border: 1px solid rgba(150, 180, 220, 0.2);
+    }
+
+    .feature-card h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      color: #3a5e85;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feature-card h3 i {
+      font-size: 1rem;
+    }
+
+    .progress-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #1d2f48;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar-bg {
+      background: #dbe5f1;
+      border-radius: 1rem;
+      height: 0.7rem;
+      overflow: hidden;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2e5a9c, #4f8ad9);
+      border-radius: 1rem;
+      transition: width 0.3s ease;
+    }
+
+    .quote-box {
+      font-style: italic;
+      color: #2b4b6f;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      padding: 0.8rem 0 0.2rem;
+      border-top: 1px solid rgba(150, 180, 220, 0.3);
+      margin-top: 0.5rem;
+    }
+
+    .quote-box i {
+      color: #1e3a5f;
+      margin-right: 0.3rem;
+    }
+
+    .activity-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .activity-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.85rem;
+      color: #1d2f48;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 0.5rem 0.8rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(200, 215, 235, 0.5);
+    }
+
+    .activity-list i {
+      color: #2e5a9c;
+      font-size: 0.8rem;
+      width: 1.2rem;
+      text-align: center;
     }
 
     footer {
-      margin-top: 1.8rem;
-      font-size: 0.75rem;
       text-align: center;
+      font-size: 0.75rem;
       color: #7590ae;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
+      margin-top: 0.8rem;
+      border-top: 1px solid rgba(74, 110, 170, 0.15);
+      padding-top: 1.2rem;
+    }
+
+    footer i {
+      color: #2e5a9c;
+      margin: 0 0.2rem;
     }
   </style>
 </head>
 <body>
   <div class="app-card">
-    <h1>
-      <span>✓</span>
-      Static Task Manager
-    </h1>
-
-    <!-- input & add button -->
-    <div class="task-input-area">
-      <input type="text" id="taskInput" placeholder="Add a new task..." autocomplete="off" autofocus>
-      <button id="addBtn">➕ Add</button>
+    <!-- Grand header -->
+    <div class="header-section">
+      <div class="title-group">
+        <div class="title-icon"><i class="fas fa-check-double"></i></div>
+        <div>
+          <h1>TaskFlow</h1>
+          <div class="subhead">
+            <i class="fas fa-circle"></i> static · elegant · powerful
+            <i class="fas fa-circle" style="margin-left: 0.3rem;"></i>
+          </div>
+        </div>
+      </div>
+      <div class="stats-grid" style="flex: 1; max-width: 400px;">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-list-check"></i></div>
+          <div class="stat-content">
+            <span class="stat-label">Total tasks</span>
+            <span class="stat-value" id="totalStat">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-circle-check"></i></div>
+          <div class="stat-content">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="doneStat">0</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- stats & clear -->
-    <div class="stats">
-      <span id="taskCount">0 tasks</span>
-      <button id="clearAllBtn">Clear all</button>
+    <!-- Main dashboard: left tasks, right insights -->
+    <div class="dashboard-panels">
+      <!-- LEFT: core task manager -->
+      <div class="task-manager-panel">
+        <div class="input-group">
+          <input type="text" id="taskInput" placeholder="What needs to be done?" autocomplete="off" autofocus>
+          <button id="addBtn"><i class="fas fa-plus"></i> Add task</button>
+        </div>
+
+        <div class="task-list-header">
+          <h2><i class="fas fa-tasks"></i> Your tasks</h2>
+          <button id="clearAllBtn"><i class="fas fa-trash-can"></i> Clear all</button>
+        </div>
+
+        <ul class="task-list" id="taskList">
+          <!-- dynamic -->
+        </ul>
+      </div>
+
+      <!-- RIGHT: extra features to fill and enrich -->
+      <div class="insights-panel">
+        <!-- Progress card -->
+        <div class="feature-card">
+          <h3><i class="fas fa-chart-simple"></i> Progress</h3>
+          <div class="progress-container">
+            <div class="progress-label">
+              <span>Completion</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="quote-box">
+            <i class="fas fa-quote-left"></i> Small steps every day lead to big results.
+          </div>
+        </div>
+
+        <!-- Activity snapshot (dynamic) -->
+        <div class="feature-card">
+          <h3><i class="fas fa-wave-square"></i> Activity</h3>
+          <ul class="activity-list" id="activityList">
+            <li><i class="fas fa-circle-plus"></i> <span id="activityAdd">No tasks yet</span></li>
+            <li><i class="fas fa-circle-check"></i> <span id="activityComplete">Complete a task</span></li>
+            <li><i class="fas fa-clock"></i> <span id="activityTime">Just started</span></li>
+          </ul>
+        </div>
+
+        <!-- Quick tip / motivation -->
+        <div class="feature-card">
+          <h3><i class="fas fa-lightbulb"></i> Quick tip</h3>
+          <p style="font-size: 0.9rem; color: #1d2f48; line-height: 1.5;">
+            Press <kbd style="background: #e3edfc; padding: 0.2rem 0.6rem; border-radius: 0.6rem; font-weight: 600;">Enter</kbd> to add a task instantly. Click the circle to mark it done.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <!-- task list container -->
-    <ul class="task-list" id="taskList">
-      <!-- dynamic tasks will appear here -->
-    </ul>
-
-    <footer>Jenkins • Docker • Static SPA</footer>
+    <footer>
+      <i class="fas fa-code"></i> TaskFlow · grand static SPA · all data stored locally
+    </footer>
   </div>
 
   <script>
     (function() {
-      // ---------- state ----------
-      let tasks = [];               // { id: string, text: string, completed: boolean }
-      const STORAGE_KEY = 'static_task_manager_tasks';
+      // ---------- STATE ----------
+      let tasks = [];
+      const STORAGE_KEY = 'grand_task_manager_tasks';
 
-      // ---------- DOM refs ----------
+      // ---------- DOM REFS ----------
       const taskInput = document.getElementById('taskInput');
       const addBtn = document.getElementById('addBtn');
       const taskListEl = document.getElementById('taskList');
-      const taskCountEl = document.getElementById('taskCount');
       const clearAllBtn = document.getElementById('clearAllBtn');
+      // stats
+      const totalStat = document.getElementById('totalStat');
+      const doneStat = document.getElementById('doneStat');
+      const progressPercent = document.getElementById('progressPercent');
+      const progressFill = document.getElementById('progressFill');
+      // activity
+      const activityAdd = document.getElementById('activityAdd');
+      const activityComplete = document.getElementById('activityComplete');
+      const activityTime = document.getElementById('activityTime');
 
-      // ---------- utilities ----------
-      const generateId = () => {
-        return Date.now() + '-' + Math.random().toString(36).substring(2, 10);
-      };
+      // ---------- UTILS ----------
+      const generateId = () => Date.now() + '-' + Math.random().toString(36).substring(2, 10);
 
-      // Load tasks from localStorage
+      // ---------- STORAGE ----------
       function loadTasksFromStorage() {
         try {
           const stored = localStorage.getItem(STORAGE_KEY);
           if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed)) {
-              // Simple validation of each task shape
               tasks = parsed.filter(t => t && typeof t === 'object' && t.id && typeof t.text === 'string')
                             .map(t => ({
                               id: String(t.id),
@@ -343,44 +647,54 @@
               tasks = [];
             }
           } else {
-            // No storage yet, set empty (no demo tasks)
             tasks = [];
           }
         } catch (e) {
-          console.warn('Failed to load tasks from storage', e);
+          console.warn('Failed to load tasks', e);
           tasks = [];
         }
       }
 
-      // Save tasks to localStorage
       function saveTasksToStorage() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
         } catch (e) {
-          console.warn('Failed to save tasks to storage', e);
+          console.warn('Failed to save tasks', e);
         }
       }
 
-      // Update task counter in UI
-      function updateTaskCounter() {
+      // ---------- UPDATE STATS & PROGRESS & ACTIVITY ----------
+      function updateStatsAndProgress() {
         const total = tasks.length;
         const completed = tasks.filter(t => t.completed).length;
+        totalStat.textContent = total;
+        doneStat.textContent = completed;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+        progressPercent.textContent = percent + '%';
+        progressFill.style.width = percent + '%';
+
+        // activity feed updates
         if (total === 0) {
-          taskCountEl.textContent = '0 tasks';
+          activityAdd.textContent = 'No tasks yet';
+          activityComplete.textContent = 'Complete a task';
         } else {
-          taskCountEl.textContent = `${total} task${total !== 1 ? 's' : ''} · ${completed} done`;
+          const lastTask = tasks[tasks.length - 1];
+          activityAdd.textContent = `Added: "${lastTask.text.length > 22 ? lastTask.text.substring(0, 22) + '…' : lastTask.text}"`;
+          activityComplete.textContent = completed > 0 ? `${completed} task${completed > 1 ? 's' : ''} completed` : 'No completed tasks yet';
         }
+        // timestamp
+        const now = new Date();
+        activityTime.textContent = `Updated ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
       }
 
-      // Render the full task list
+      // ---------- RENDER TASKS ----------
       function renderTasks() {
         if (tasks.length === 0) {
-          taskListEl.innerHTML = `<li class="empty-message">✨ No tasks yet — add one above ✨</li>`;
-          updateTaskCounter();
+          taskListEl.innerHTML = `<li class="empty-message"><i class="fas fa-seedling" style="margin-right: 0.5rem;"></i> Your task list is empty — add something grand!</li>`;
+          updateStatsAndProgress();
           return;
         }
 
-        // Build list items
         const fragment = document.createDocumentFragment();
 
         tasks.forEach(task => {
@@ -388,7 +702,7 @@
           li.className = 'task-item';
           li.dataset.id = task.id;
 
-          // Checkbox circle (custom toggle)
+          // checkbox
           const checkbox = document.createElement('div');
           checkbox.className = `task-checkbox ${task.completed ? 'completed' : ''}`;
           checkbox.setAttribute('role', 'checkbox');
@@ -405,16 +719,16 @@
             }
           });
 
-          // Task text
+          // text
           const textSpan = document.createElement('span');
           textSpan.className = `task-text ${task.completed ? 'completed' : ''}`;
           textSpan.textContent = task.text;
 
-          // Delete button
+          // delete
           const deleteBtn = document.createElement('button');
           deleteBtn.className = 'delete-btn';
           deleteBtn.setAttribute('aria-label', 'Delete task');
-          deleteBtn.innerHTML = '✕'; // multiplication sign
+          deleteBtn.innerHTML = '<i class="fas fa-xmark"></i>';
           deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             deleteTask(task.id);
@@ -428,18 +742,17 @@
 
         taskListEl.innerHTML = '';
         taskListEl.appendChild(fragment);
-        updateTaskCounter();
+        updateStatsAndProgress();
       }
 
-      // ---------- core actions ----------
+      // ---------- ACTIONS ----------
       function addTask() {
         const text = taskInput.value.trim();
         if (!text) {
-          // small visual feedback for empty input
           taskInput.style.borderColor = '#c23b3b';
           taskInput.style.boxShadow = '0 0 0 4px rgba(194, 59, 59, 0.1)';
           setTimeout(() => {
-            taskInput.style.borderColor = '#cddaea';
+            taskInput.style.borderColor = 'transparent';
             taskInput.style.boxShadow = 'none';
           }, 400);
           return;
@@ -455,7 +768,6 @@
         saveTasksToStorage();
         renderTasks();
 
-        // Clear input and focus
         taskInput.value = '';
         taskInput.focus();
       }
@@ -476,14 +788,14 @@
 
       function clearAllTasks() {
         if (tasks.length === 0) return;
-        if (confirm('Delete all tasks?')) {
+        if (confirm('Delete all tasks? This cannot be undone.')) {
           tasks = [];
           saveTasksToStorage();
           renderTasks();
         }
       }
 
-      // ---------- event listeners ----------
+      // ---------- EVENT LISTENERS ----------
       addBtn.addEventListener('click', addTask);
 
       taskInput.addEventListener('keypress', (e) => {
@@ -495,11 +807,13 @@
 
       clearAllBtn.addEventListener('click', clearAllTasks);
 
-      // ---------- init ----------
+      // ---------- INIT ----------
       function init() {
         loadTasksFromStorage();
         renderTasks();
         taskInput.focus();
+        // seed activity timestamp
+        updateStatsAndProgress();
       }
 
       init();
